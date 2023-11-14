@@ -5,25 +5,42 @@ def solve_linear_equations():
     # Kiểm tra xem tất cả ô nhập liệu đã được điền đủ giá trị
     if any("" in row for row in entries) or "" in constant_entries:
         result_label.config(text="Hãy điền đầy đủ giá trị ")
-
-    equations = []
-    for i in range(n):
-        equation = []
-        for j in range(n):
-            value = entries[i][j].get()
+    else:
+        matrix_a = []
+        vector_b = []
+        for i in range(n):
+            equation = []
+            for j in range(n):
+                value = entries[i][j].get()
+                if value == "":
+                    result_label.config(text="Hãy điền đầy đủ giá trị ")
+                    return
+                try:
+                    equation_value = float(value)
+                    equation.append(equation_value)
+                except ValueError:
+                    result_label.config(text="Nhập giá trị hợp lệ cho a")
+                    return
+            if len(equation) != n:
+                result_label.config(text="Số lượng phần tử trong ma trận a không đồng nhất")
+                return
+            matrix_a.append(equation)
+            value = constant_entries[i].get()
             if value == "":
                 result_label.config(text="Hãy điền đầy đủ giá trị ")
                 return
-            equation.append(float(value))
-        equations.append(equation)
-    constants = [float(constant_entries[i].get()) for i in range(n)]
+            try:
+                constant_value = float(value)
+                vector_b.append(constant_value)
+            except ValueError:
+                result_label.config(text="Nhập giá trị hằng số hợp lệ cho b")
+                return
 
-    try:
-        solution = np.linalg.solve(equations, constants)
-        result_label.config(text=f"Kết quả: {solution}")
-    except np.linalg.LinAlgError:
-        result_label.config(text="Hệ phương trình vô nghiệm hoặc vô số nghiệm.")
-
+        try:
+            solution = np.linalg.solve(matrix_a, vector_b)
+            result_label.config(text=f"Kết quả: {solution}")
+        except np.linalg.LinAlgError:
+            result_label.config(text="Hệ phương trình vô nghiệm hoặc vô số nghiệm.")
 
 def get_number_of_equations():
     global n
